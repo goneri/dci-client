@@ -36,5 +36,15 @@ def parse_args(args):
     parser.add_argument('--limit', type=int, default=10)
     parser.add_argument('--sort')
     parser.add_argument('--where', action=WhereAction, default=[])
-    parser.add_argument('command', nargs='?', default='status')
-    return parser.parse_args(args)
+    parser.add_argument('resource', nargs='?', default='users')
+    parser.add_argument('action', nargs='?', default='list')
+    # https://stackoverflow.com/questions/37367331/is-it-possible-to-use-argparse-to-capture-an-arbitrary-set-of-optional-arguments
+    parsed, unknown = parser.parse_known_args()
+    parsed = vars(parsed)
+    parsed['action_args'] = {}
+    for arg in unknown:
+        if arg.startswith("--"):
+            k, v = arg[2:].split('=')
+            parsed['action_args'][k] = v
+    parsed['bob'] = 1
+    return parsed
